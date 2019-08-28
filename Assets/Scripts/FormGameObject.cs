@@ -44,7 +44,7 @@ public class FormGameObject : MonoBehaviour {
 		transform.Rotate(new Vector3(Time.deltaTime*leafId*4f, Time.deltaTime*branchId*5f, Time.deltaTime*-2f*leafId));
 		//shader
 		material.SetVector("_FormObject", new Vector4(transform.position.x, transform.position.y, transform.position.z));
-        material.SetVector("_Animation", new Vector4(audioPlayer.GetRms(), audioPlayer.GetHz(), branchId, leafId));
+        material.SetVector("_Animation", new Vector4(audioPlayer.GetDb(), audioPlayer.GetHz(), branchId, leafId));
 	}
 
 	private void UpdateTargetPosition() {

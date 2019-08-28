@@ -66,9 +66,9 @@
 			float r = length(IN.worldPos - _FormObject.xyz); //radius of sphere
 			float w = sphDensity(IN.worldPos, rd, float4(_FormObject.xyz, r), 20.0);
 			
-            float3 gc = PT(_Time + _Animation.z); 
-			float av = min(1.0, pow(_Animation.x*10.0, 2.0));
-            float3 pc = gc*0.1 + gc*pow(w, 8.0);
+            float3 gc = PT(_Time.x + _Animation.z); 
+			float av = clamp(_Animation.x*0.5, 0.0, 3.0);
+			float3 pc = gc*0.1 + gc*pow(w, 8.0);
 			pc += gc*av*w*w*w*w*w*5.0; // * (1.0 + _Animation.w)*0.2;
 			o.Albedo = pc;
 		}

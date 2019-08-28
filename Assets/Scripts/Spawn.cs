@@ -18,7 +18,7 @@ public class Spawn : MonoBehaviour {
     private List<List<FormGameObject>> branches = new List<List<FormGameObject>>(); 
     private bool initMe = true; 
     private PatternType currentPattern;
-    private TimerUtils timerUtils = new TimerUtils(20.0f); //swith every 20 seconds
+    private TimerUtils timerUtils = new TimerUtils(27.4285715f); //change scene every 64 beats at 140 BPM
 
     void Start() {
         initMe = true;
@@ -62,7 +62,8 @@ public class Spawn : MonoBehaviour {
     }
 
     private void UpdateScene() {
-        NextPatternType();
+        //NextPatternType();
+        currentPattern = PatternType.GRID;
         for (int branch = 0; branch < Branches; branch++) {
             List<FormGameObject> leaves = branches[branch];
             for (int leaf = 0; leaf < Leaves; leaf++) {

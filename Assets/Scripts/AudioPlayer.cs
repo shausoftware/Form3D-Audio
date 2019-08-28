@@ -2,7 +2,7 @@
 
 public class AudioPlayer : MonoBehaviour {
 
-	private const int SAMPLES = 256;
+	private const int SAMPLES = 512;
     private const float REF_VALUE = 0.1f; // RMS value for DB
     private const float THRESHOLD = 0.02f;
 
@@ -48,6 +48,9 @@ public class AudioPlayer : MonoBehaviour {
 		return hz;
 	}
 
+	private float maxDB = -160.0f;
+	private float maxHz = 0.0f;
+
 	//https://answers.unity.com/questions/157940/getoutputdata-and-getspectrumdata-they-represent-t.html
 	private void AnalyseAudio() {
 
@@ -80,5 +83,16 @@ public class AudioPlayer : MonoBehaviour {
          	freqN += 0.5f*(dR*dR - dL*dL);
 		}
 		hz = freqN*(sampleRate/2)/SAMPLES; // convert index to frequency
+
+		/* 
+        if (db>maxDB) { 
+			maxDB = db;
+		}
+		if (hz>maxHz) {
+			maxHz = hz;
+		}
+		Debug.Log("DB:"+db+" maxDB:"+maxDB);
+		Debug.Log("Hz:"+hz+" maxHz:"+maxHz);
+		//*/
 	}
 }

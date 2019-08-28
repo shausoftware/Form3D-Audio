@@ -5,6 +5,7 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		_KaliFactor("Kali Factor", Range(0.1, 2.0)) = 0.63
 		_KaliIterations("Kali Iterations", Range(5, 10)) = 6
+		_Animation ("Animation", Vector) = (0,0,0,0)
 	}
 	SubShader
 	{
@@ -41,7 +42,8 @@
 
 			float _KaliFactor;
 			int _KaliIterations;
-			
+			fixed4 _Animation;
+
 			v2f vert (appdata v) {
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
@@ -63,34 +65,38 @@
 				return float(q) * UIF;
 			}
 
-			float3 kali(float3 rd) {
-    			float3 pc = float3(0.0,0.0,0.0);
-    			float k = 0.0;
-    			for (float i = 0.0; i < float(_KaliIterations); i++) {
-        			rd = abs(rd) / dot(rd, rd) - _KaliFactor;
-        			k += length(rd) * length(hash33(rd + _Time*0.01));
-        			pc += lerp(float3(1.0,0.5,0.0), float3(0.0,1.0,0.0), i/float(_KaliIterations)) * k*k*k * 0.0003;
-    			}
-    			return pc;
-			}
-
-			float3 planes(float3 rd, float3 c) {
-    			float a = (atan2(rd.y, rd.x) / 6.283185) + 0.5, //polar
-					  fla = floor(a * 24.0) / 24.0, //split into 24 segemnts
-					  fra = frac(a * 24.0),
-					  frnd = hash11(fla * 400.0);
-    			float3 pc = c * frnd * step(0.1, fra); //mix colours radially
-				float mt = (abs(rd.y) + frnd * 4. - _Time * 0.1) % 0.3; //split segments
-    			pc *= step(mt, 0.16) * mt * 16.; //split segments
-    			return pc * max(abs(rd.y), 0.); //fade middle
-			}
-
 			//IQ cosine palattes
 			//http://www.iquilezles.org/www/articles/palettes/palettes.htm
 			float3 PT(float t) {
 				return float3(0.5,0.5,0.5) + 
 			       	   float3(0.5,0.5,0.5) * cos(6.28318 * (float3(1.0,1.0,1.0) * t * 0.1 + float3(0.0, 0.33, 0.67)));
 		    }
+
+			float3 kali(float3 rd) {
+    			float v = 0.0;
+    			float k = 0.0;
+    			for (float i = 0.0; i < float(_KaliIterations); i++) {
+        			rd = abs(rd) / dot(rd, rd) - _KaliFactor;
+        			k += length(rd) * length(hash33(rd + _Time.y*0.1));
+        			v += k*k*k*0.0003;
+    			}
+    			return v;
+			}
+
+			float3 planes(float3 rd) {
+    			float a = (atan2(rd.y, rd.x) / 6.283185) + 0.5, //polar
+					  fla = floor(a * 32.0) / 32.0, //split into 32 segemnts
+					  fra = frac(a * 32.0),
+					  frnd = hash11(fla * 400.0);
+
+    			float3 pc = PT(fla*4.0+_Time.y)*16.0; //mix colours radially
+				pc += (step(0.1, fra) * step(fra, 0.2)) * 16.0;
+				pc += (step(0.8, fra) * step(fra, 0.9)) * 16.0;
+				float mt = (abs(rd.y) + frnd * 4.0 - _Time.y * 0.001) % 0.3; //split segments
+    			pc *= step(mt, 0.16) * mt; //split segments
+    			pc *= step(0.1, fra) * step(fra, 0.9); //edges
+				return pc * max(abs(rd.y), 0.); //fade middle
+			}
 
 			float noise(float2 uv, float s1, float s2, float t1, float t2, float c1) {
 				return clamp(hash33(float3(uv.xy * s1, t1)).x +
@@ -99,16 +105,16 @@
 
 			fixed4 frag (v2f i) : SV_Target {
 
-		        //float cy = 1.0 - abs(i.uv.y - 0.5) * 2.0;
 				float cy = 1.0 - abs(i.viewT.y)*2.0;
-                float nz = noise(i.uv, 12.0, 4.0, floor(_Time), floor(_Time), 0.96);
+                float nz = noise(i.uv*10.0, 12.0, 4.0, floor(_Time.y), floor(_Time.y), 0.96);
                 
-				float3 gc = PT(_Time);
+				float3 gc = PT(_Time.y);
 				
-                //float3 col = gc * pow(cy,0.5) + float3(1,1,1) * pow(cy,3.) * nz * 0.3;
-				//float3 col = kali(i.viewT) * gc * 0.002;// + gc * pow(cy,6.0) * nz;
-				//col -= nz*0.05;
-                float3 col = planes(i.viewT, gc) * 0.3;
+				float at = (_Time.y) % 64;
+				float3 ps = planes(i.viewT)*0.1;
+				float3 kl = kali(i.viewT) * gc * 0.01;
+				float3 col = lerp(ps, kl, smoothstep(28,32,at) * smoothstep(64,60,at));
+                col *= nz;
 
 				return float4(col, 1.0);
 			}
