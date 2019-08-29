@@ -12,4 +12,8 @@ public class Background : MonoBehaviour {
 	void UpdateShaderBackground(int backgroundId) {
 		material.SetInt("_Background", backgroundId);
 	}
+
+	void OnDisable() {
+		Keyboard.changeBackground -= UpdateShaderBackground;
+	} 
 }

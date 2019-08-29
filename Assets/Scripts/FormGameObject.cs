@@ -24,6 +24,10 @@ public class FormGameObject : MonoBehaviour {
 	    Animate();	 
 	}
 
+	void OnDisable() {
+		Keyboard.changeBackground -= UpdateShaderBackground;
+	}
+
 	public void InitFormObject(int branchId, int leafId) {
 		this.branchId = branchId;
 		this.leafId = leafId;
@@ -36,9 +40,13 @@ public class FormGameObject : MonoBehaviour {
 		startTime = Time.time;
 	}
 
-	void UpdateShaderBackground(int backgroundId) {
+	public void UpdateShaderBackground(int backgroundId) {
 		frameMaterial.SetInt("_Background", backgroundId);
 		coreMaterial.SetInt("_Background", backgroundId);
+	}
+
+	public void Reset() {
+		transform.position = Vector3.zero;
 	}
 
     private void Animate() {

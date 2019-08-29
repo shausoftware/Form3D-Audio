@@ -20,8 +20,9 @@ public class Spawn : MonoBehaviour {
     private PatternType currentPattern;
     private TimerUtils timerUtils = new TimerUtils(27.4285715f); //change scene every 64 beats at 140 BPM
 
-    void Start() {
+    void Awake() {
         initMe = true;
+        Keyboard.reset += Reset;
     }
 
     void Update() {
@@ -30,8 +31,16 @@ public class Spawn : MonoBehaviour {
             initMe = false;
         } 
         if (timerUtils.ReadyToUpdate()) {
-            UpdateScene();
+            UpdateScene(false);
         }
+    }
+
+    void OnDisable() {
+		Keyboard.reset -= Reset;
+	} 
+
+    public void Reset() {
+        UpdateScene(true);
     }
 
     private void NextPatternType() {
@@ -61,12 +70,15 @@ public class Spawn : MonoBehaviour {
         }
     }
 
-    private void UpdateScene() {
+    private void UpdateScene(bool reset) {
         NextPatternType();
         //currentPattern = PatternType.GRID;
         for (int branch = 0; branch < Branches; branch++) {
             List<FormGameObject> leaves = branches[branch];
             for (int leaf = 0; leaf < Leaves; leaf++) {
+                if (reset) {
+                    leaves[leaf].Reset();
+                }
                 leaves[leaf].UpdatePattern(currentPattern, TargetPosition(branch, leaf), TargetScale(branch, leaf));
             }
         }
