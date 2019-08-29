@@ -8,12 +8,15 @@ public class FormGameObject : MonoBehaviour {
 	private Vector3 targetScale;
     private PatternType currentPattern;
 	private float startTime;
-	private Material material;
+	private Material frameMaterial;
+	private Material coreMaterial;
 	private AudioPlayer audioPlayer;
 
 	void Start () {
-		material = transform.GetChild(1).gameObject.GetComponent<Renderer>().material; //core material
+		frameMaterial = transform.GetChild(0).gameObject.GetComponent<Renderer>().material;
+		coreMaterial = transform.GetChild(1).gameObject.GetComponent<Renderer>().material;
 		audioPlayer = FindObjectOfType<AudioPlayer>();
+		Keyboard.changeBackground += UpdateShaderBackground;
 	}
 	
  	void Update () {
@@ -31,6 +34,11 @@ public class FormGameObject : MonoBehaviour {
 		this.targetPosition = targetPosition;
 		this.targetScale = targetScale;
 		startTime = Time.time;
+	}
+
+	void UpdateShaderBackground(int backgroundId) {
+		frameMaterial.SetInt("_Background", backgroundId);
+		coreMaterial.SetInt("_Background", backgroundId);
 	}
 
     private void Animate() {
@@ -56,8 +64,8 @@ public class FormGameObject : MonoBehaviour {
 		//rotation
 		transform.Rotate(new Vector3(Time.deltaTime*leafId*4f, Time.deltaTime*branchId*5f, Time.deltaTime*-2f*leafId));
 		//shader
-		material.SetVector("_FormObject", new Vector4(transform.position.x, transform.position.y, transform.position.z));
-        material.SetVector("_Animation", new Vector4(db, hz, branchId, leafId));
+		coreMaterial.SetVector("_FormObject", new Vector4(transform.position.x, transform.position.y, transform.position.z));
+        coreMaterial.SetVector("_Animation", new Vector4(db, hz, branchId, leafId));
 	}
 
 	private void UpdateTargetPosition() {
