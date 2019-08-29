@@ -34,9 +34,22 @@ public class FormGameObject : MonoBehaviour {
 	}
 
     private void Animate() {
+
+		float db = audioPlayer.GetDb();
+		float rms = audioPlayer.GetRms();
+		float hz = audioPlayer.GetHz();
+		float bassTreble = (hz<200.0f) ? 1 : 0; //treble  = 1 - bassTreble
+		
+		float avs = 1.0f;
+		if (branchId%2 == 0) {
+	        avs += Mathf.Pow(rms*1.2f,4) * bassTreble;
+			//avs += Mathf.Clamp(db*0.5f, 0, 1) * 0.05f * bass;
+		} else {
+		}
+
 		//position
-        float targetDistance = Vector3.Distance(transform.position, targetPosition);
-		transform.position = Vector3.Lerp(transform.position, targetPosition, 0.4f/targetDistance);
+        float targetDistance = Vector3.Distance(transform.position, targetPosition * avs);
+		transform.position = Vector3.Lerp(transform.position, targetPosition * avs, 0.4f/targetDistance);
 		//scale
         float targetScaleDelta = Vector3.Distance(transform.localScale, targetScale);
 		transform.localScale = Vector3.Lerp(transform.localScale, targetScale, 0.1f/targetScaleDelta);
@@ -44,7 +57,7 @@ public class FormGameObject : MonoBehaviour {
 		transform.Rotate(new Vector3(Time.deltaTime*leafId*4f, Time.deltaTime*branchId*5f, Time.deltaTime*-2f*leafId));
 		//shader
 		material.SetVector("_FormObject", new Vector4(transform.position.x, transform.position.y, transform.position.z));
-        material.SetVector("_Animation", new Vector4(audioPlayer.GetDb(), audioPlayer.GetHz(), branchId, leafId));
+        material.SetVector("_Animation", new Vector4(db, hz, branchId, leafId));
 	}
 
 	private void UpdateTargetPosition() {

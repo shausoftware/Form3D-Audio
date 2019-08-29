@@ -3,9 +3,8 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_KaliFactor("Kali Factor", Range(0.1, 2.0)) = 0.63
-		_KaliIterations("Kali Iterations", Range(5, 10)) = 6
 		_Animation ("Animation", Vector) = (0,0,0,0)
+		_Background ("Background", Range(1, 3)) = 1
 	}
 	SubShader
 	{
@@ -40,9 +39,8 @@
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 
-			float _KaliFactor;
-			int _KaliIterations;
 			fixed4 _Animation;
+			int _Background;
 
 			v2f vert (appdata v) {
 				v2f o;
@@ -72,18 +70,18 @@
 			       	   float3(0.5,0.5,0.5) * cos(6.28318 * (float3(1.0,1.0,1.0) * t * 0.1 + float3(0.0, 0.33, 0.67)));
 		    }
 
-			float3 kali(float3 rd) {
+			float3 Kali(float3 rd) {
     			float v = 0.0;
     			float k = 0.0;
-    			for (float i = 0.0; i < float(_KaliIterations); i++) {
-        			rd = abs(rd) / dot(rd, rd) - _KaliFactor;
+    			for (float i = 0.0; i < 7.0; i++) {
+        			rd = abs(rd) / dot(rd, rd) - 0.63;
         			k += length(rd) * length(hash33(rd + _Time.y*0.1));
         			v += k*k*k*0.0003;
     			}
-    			return v;
+    			return v/7.0;
 			}
 
-			float3 planes(float3 rd) {
+			float3 Planes(float3 rd) {
     			float a = (atan2(rd.y, rd.x) / 6.283185) + 0.5, //polar
 					  fla = floor(a * 32.0) / 32.0, //split into 32 segemnts
 					  fra = frac(a * 32.0),
@@ -92,10 +90,36 @@
     			float3 pc = PT(fla*4.0+_Time.y)*16.0; //mix colours radially
 				pc += (step(0.1, fra) * step(fra, 0.2)) * 16.0;
 				pc += (step(0.8, fra) * step(fra, 0.9)) * 16.0;
-				float mt = (abs(rd.y) + frnd * 4.0 - _Time.y * 0.001) % 0.3; //split segments
+				float mt = (abs(rd.y) + frnd * 4.0 - _Time.y * 0.01) % 0.3; //split segments
     			pc *= step(mt, 0.16) * mt; //split segments
     			pc *= step(0.1, fra) * step(fra, 0.9); //edges
 				return pc * max(abs(rd.y), 0.); //fade middle
+			}
+
+			// particles (Andrew Baldwin)
+			float Snow(float3 direction, float2 uv, float2 R) {
+				float help = 0.0;
+				const float3x3 p = float3x3(13.323122,23.5112,21.71123,21.1212,28.7312,11.9312,21.8112,14.7212,61.3934);
+				float2 uvx = float2(direction.x,direction.z)+float2(1.0,R.y/R.x)*uv.xy / R.xy;
+				float acc = 0.0;
+				float DEPTH = direction.y*direction.y-0.3;
+				float WIDTH =0.1;
+				float SPEED = 0.1;
+				for (int i=0;i<10;i++) {
+					float fi = float(i);
+					float2 q = uvx*(1.+fi*DEPTH);
+					q += float2(q.y*(WIDTH* (fi*7.238917 % 1.0) -WIDTH*0.5),SPEED*_Time.y/(1.0+fi*DEPTH*0.03));
+					float3 n = float3(floor(q),31.189+fi);
+					float3 m = floor(n)*0.00001 + frac(n);
+					float3 mp = (31415.9+m)/frac(mul(p, m));
+					float3 r = frac(mp);
+					float2 s = abs((q % 1.0)-0.5+0.9*r.xy-0.45);
+					float d = 0.7*max(s.x-s.y,s.x+s.y)+max(s.x,s.y)-0.01;
+					float edge = 0.04;
+					acc += smoothstep(edge,-edge,d)*(r.x/1.0);
+					help = acc;
+				}
+				return help;
 			}
 
 			float noise(float2 uv, float s1, float s2, float t1, float t2, float c1) {
@@ -106,14 +130,16 @@
 			fixed4 frag (v2f i) : SV_Target {
 
 				float cy = 1.0 - abs(i.viewT.y)*2.0;
-                float nz = noise(i.uv*10.0, 12.0, 4.0, floor(_Time.y), floor(_Time.y), 0.96);
-                
+                float nz = noise(i.uv*10.0, 12.0, 4.0, floor(_Time.y), floor(_Time.y), 0.96);                
 				float3 gc = PT(_Time.y);
 				
-				float at = (_Time.y) % 64;
-				float3 ps = planes(i.viewT)*0.1;
-				float3 kl = kali(i.viewT) * gc * 0.01;
-				float3 col = lerp(ps, kl, smoothstep(28,32,at) * smoothstep(64,60,at));
+				float3 col = Planes(i.viewT)*0.2;
+				if (_Background==2) {
+					col = Kali(i.viewT)*gc*0.6;
+				} else if (_Background==3) {
+					col = gc * pow(cy, 4.0) + float3(1,1,1) * pow(cy, 16.0);
+					col += Snow(normalize(float3(0.1,2.0,0.2)), i.uv*2.0, _ScreenParams.zw);
+				}
                 col *= nz;
 
 				return float4(col, 1.0);

@@ -62,8 +62,8 @@ public class Spawn : MonoBehaviour {
     }
 
     private void UpdateScene() {
-        //NextPatternType();
-        currentPattern = PatternType.GRID;
+        NextPatternType();
+        //currentPattern = PatternType.GRID;
         for (int branch = 0; branch < Branches; branch++) {
             List<FormGameObject> leaves = branches[branch];
             for (int leaf = 0; leaf < Leaves; leaf++) {

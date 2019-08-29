@@ -3,7 +3,7 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Frequency ("Frequency", Range(800.0, 1200.0)) = 1000.0
+		_Frequency ("Frequency", Range(800.0, 2000.0)) = 1800.0
 		_Shift ("Shift", Range(0.1, 10.0)) = 0.8
 	}
 	SubShader
@@ -49,7 +49,7 @@
 			
 			fixed4 frag (v2f i) : SV_Target {
 				fixed4 col = tex2Dproj(_GrabTexture, i.grabUv);
-				//col.xyz += float3(1,0,0)*0.1;
+				col.xyz += float3(1,0,0)*0.05;
 				col.xyz *= sin((i.uv.y + _Time * _Shift) * _Frequency) * 0.3 + 0.8; 
 				return col;
 			}
