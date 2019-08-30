@@ -5,7 +5,7 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		_ScanFrequency ("Scan Frequency", Range(800.0, 2400.0)) = 2000.0
 		_ScanShift ("Scan Shift", Range(0.1, 10.0)) = 0.8
-		_Aberation ("Aberation", Range(0.0, 0.01)) = 0.0
+		_GlitchAmount ("Glitch Amount", Range(0.0, 1.0)) = 0.0
 	}
 	SubShader
 	{
@@ -21,6 +21,7 @@
 			#pragma fragment frag
 			
 			#include "UnityCG.cginc"
+			#include "FormCommon.glslinc"
 
 			struct appdata {
 				float4 vertex : POSITION;
@@ -39,7 +40,7 @@
 			sampler2D _GrabTexture;
 			float _ScanFrequency;
 			float _ScanShift;
-			float _Aberation;
+			float _GlitchAmount;
 
 			v2f vert (appdata v) {
 				v2f o;
@@ -51,24 +52,42 @@
 
 			float2x2 rot(float x) {return float2x2(cos(x), sin(x), -sin(x), cos(x));}
 
-			float4 offsetColour(float o, float4 uv) {
-				float4 offset = float4(0,_Aberation,0,0);
-				offset.xy = mul(offset.xy, rot(o));
-				return tex2Dproj(_GrabTexture, uv + offset);
+			float4 offsetColour(float a, float r, float w, float4 uv) {
+				float4 offset = float4(0,r,0,0);
+				offset.xy = mul(offset.xy, rot(a));
+				return tex2Dproj(_GrabTexture, uv + offset + w);
 			}
 			
 			fixed4 frag (v2f i) : SV_Target {
 
-				fixed4 col = tex2Dproj(_GrabTexture, i.grabUv); //image
+				//glitch routine
+                float nz = noise(i.uv*10.0, 32.0, 63.0, floor(_Time.y*33.0), floor(_Time.y*3.0), 0.06);                
+				//TODO: nz2 term is nice
+				float nz2 = hash11(i.uv.y*31.0+89.0+_Time.y*9.0);
+				float nz3 = (hash11(i.uv.y*1027.0+33.0+_Time.y*29.0) * nz2); 
+				float wobble = (sin(i.uv.y*387.0+_Time.y*95.0)*0.001 + 
+							    sin(i.uv.y*96.0+_Time.y*21.0)*0.03 * max(0.0, sin(_Time.y*41.0)*0.7)) *
+								_GlitchAmount;
+				float red = offsetColour(0.0, 
+				                         clamp(sin(_Time.y*13.0), 0.0, 0.004), 
+										 wobble, 
+										 i.grabUv).x;
+				float green = offsetColour(2.094395, 
+				                           clamp(sin(_Time.y*31.0+27.0), 0.0, 0.007), 
+										   wobble, 
+										   i.grabUv).y;
+				float blue = offsetColour(4.188790, 
+				                          clamp(sin(_Time.y*27.0-27.0), 0.0, 0.005), 
+										  wobble, 
+										  i.grabUv).z;
 
-				fixed4 colRed = offsetColour(0.0, i.grabUv);
-				fixed4 colGreen = offsetColour(2.094395, i.grabUv);
-				fixed4 colBlue = offsetColour(4.188790, i.grabUv);
-
-				//col.xyz += float3(1,0,0)*0.2;
-				//col.xyz *= sin((i.uv.y + _Time * _Shift) * _Frequency) * 0.3 + 0.8; //scan lines
+				float3 col = float3(red, green, blue);
+				float3 nzCol = float3(1,1,1) * (1.0 - nz); //snow noise
+				col = lerp(col, nzCol*nz3, _GlitchAmount*0.4);
+				col = lerp(tex2Dproj(_GrabTexture, i.grabUv).xyz, col, _GlitchAmount);
+				col.xyz *= sin((i.uv.y + _Time.x * _ScanShift) * _ScanFrequency) * 0.3 + 0.8; //scan lines
 				
-				return float4(colRed.x, colGreen.y, colBlue.z, 1);
+				return float4(col.x, col.y, col.z, 1.0);
 			}
 			ENDCG
 		}

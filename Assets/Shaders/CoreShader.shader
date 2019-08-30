@@ -70,6 +70,7 @@
 			pc += glow*av*w*w*w*w*w*5.0; //audio glow boost
 
 			//reflections
+			/*
 			float3 rrd = reflect(rd, IN.worldNormal);
         	float fresnel = pow(clamp(1.0 + dot(rd, IN.worldNormal), 0.0, 1.0), 2.0);
 			float rCol = Planes(rrd);
@@ -78,7 +79,8 @@
 			} else if (_Background==3) {
 				rCol = Snow(float3(0.1,2.0,0.2), IN.uv_MainTex, _ScreenParams.zw, rrd.y);
 			}
-
+			*/
+			
 			o.Albedo = pc;
 		}
 		ENDCG
