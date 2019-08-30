@@ -10,6 +10,7 @@ public class Lens : MonoBehaviour {
 	void Awake() {
 		material = transform.GetComponent<Renderer>().material; //lens material
 		Keyboard.changeBackground += UpdateShaderBackground;
+		Keyboard.changeShape += UpdateShape;
 		Keyboard.reset += Reset;
 	}
 
@@ -29,10 +30,18 @@ public class Lens : MonoBehaviour {
 	} 
 
 	void UpdateShaderBackground(int backgroundId) {
-		countdown = 1.0f;
+		StartCountdown();
+	}
+
+	void UpdateShape(int shapeId) {
+		StartCountdown();
 	}
 
 	void Reset() {
-		UpdateShaderBackground(0);
+		StartCountdown();
+	}
+
+	private void StartCountdown() {
+		countdown = 1.0f;
 	}
 }

@@ -37,7 +37,7 @@ float3 Kali(float3 rd) {
         k += length(rd) * length(hash33(rd + _Time.y*0.1));
         pc += lerp(PT((i/7.0) + _Time.y*0.2), PT((1.0 - i/7.0) - _Time.y*.3), i/7.0) * k*k*k * 0.0003;
     }
-    return pc*0.1;
+    return pc*0.04;
 }
 
 float3 Planes(float3 rd) {

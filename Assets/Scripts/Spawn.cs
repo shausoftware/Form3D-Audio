@@ -7,9 +7,9 @@ public enum PatternType {SHELL=1, LOXODROME, SQUID, RING, GRID};
 public class Spawn : MonoBehaviour {
 
     [Range(1, 2)]
-    public int Shape = 1; //1 Sphere, 2 Cube
-    public GameObject SpawnSphere; 
+    public int Shape = 1; //1 Cube, 2 Sphere
     public GameObject SpawnCube;  
+    public GameObject SpawnSphere; 
     [Range(1, 10)]
     public int Branches = 6;
     [Range(2, 20)]
@@ -23,6 +23,7 @@ public class Spawn : MonoBehaviour {
     void Awake() {
         initMe = true;
         Keyboard.reset += Reset;
+        Keyboard.changeShape += UpdateShape;
     }
 
     void Update() {
@@ -37,9 +38,17 @@ public class Spawn : MonoBehaviour {
 
     void OnDisable() {
 		Keyboard.reset -= Reset;
+        Keyboard.changeShape -= UpdateShape;
 	} 
 
-    public void Reset() {
+    void Reset() {
+        UpdateScene(true);
+    }
+
+    void UpdateShape(int shapeId) {
+        Shape = shapeId;
+        ClearScene();
+        InitScene();
         UpdateScene(true);
     }
 
@@ -57,7 +66,7 @@ public class Spawn : MonoBehaviour {
 
     private void InitScene() {
         branches = new List<List<FormGameObject>>();
-        GameObject spawnObject = (Shape == 1) ? SpawnSphere : SpawnCube;
+        GameObject spawnObject = (Shape == 1) ? SpawnCube : SpawnSphere;
         for (int branch = 0; branch < Branches; branch++) {
             List<FormGameObject> leaves = new List<FormGameObject>();
             for (int leaf = 0; leaf < Leaves; leaf++) {
@@ -82,6 +91,16 @@ public class Spawn : MonoBehaviour {
                 leaves[leaf].UpdatePattern(currentPattern, TargetPosition(branch, leaf), TargetScale(branch, leaf));
             }
         }
+    }
+
+    private void ClearScene() {
+        for (int branch = 0; branch < Branches; branch++) {
+            List<FormGameObject> leaves = branches[branch];
+            for (int leaf = 0; leaf < Leaves; leaf++) {
+                GameObject.Destroy(leaves[leaf].gameObject);
+            }
+        }
+        branches = new List<List<FormGameObject>>();   
     }
 
     private Vector3 TargetPosition(int branch, int leaf) {

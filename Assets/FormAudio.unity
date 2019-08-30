@@ -360,10 +360,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a167be8037e56497c8b1e77613f896b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Shape: 2
+  Shape: 1
+  SpawnCube: {fileID: 1452261751334050, guid: 2a0ffaeae1ea44841834148d5030a8f3, type: 2}
   SpawnSphere: {fileID: 1529492737074552, guid: 2dba35327cb4c41ec8202825ff075b81,
     type: 2}
-  SpawnCube: {fileID: 1452261751334050, guid: 2a0ffaeae1ea44841834148d5030a8f3, type: 2}
   Branches: 6
   Leaves: 15
 --- !u!1 &1050077702

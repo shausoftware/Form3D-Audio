@@ -10,6 +10,8 @@ public class Keyboard : MonoBehaviour {
 	public static event Help help;
 	public delegate void Reset();
 	public static event Reset reset; 
+	public delegate void ChangeShape(int shapeId);
+	public static event ChangeShape changeShape;
 
 	#region Singleton
 	private static Keyboard _instance;
@@ -25,11 +27,23 @@ public class Keyboard : MonoBehaviour {
 		//Backgrounds
 		if (Input.GetKeyDown("1")) {
 			UpdateBackground(1);
-		} else if (Input.GetKeyDown("2")) {
+		}
+		if (Input.GetKeyDown("2")) {
 			UpdateBackground(2);
-		} else if (Input.GetKeyDown("3")) {
+		}
+		if (Input.GetKeyDown("3")) {
 			UpdateBackground(3);
 		}
+		if (Input.GetKeyDown("4")) {
+			UpdateShape(1);
+		} 
+		if (Input.GetKeyDown("5")) {
+			UpdateShape(2);
+		} 
+		if (Input.GetKeyDown("6")) {
+		} 
+		if (Input.GetKeyDown("7")) {
+		} 
 
 		//Help
 		if (Input.GetKeyDown("h")) {
@@ -49,6 +63,12 @@ public class Keyboard : MonoBehaviour {
 	private void UpdateBackground(int id) {
 		if (changeBackground != null) {
 			changeBackground(id);
+		}
+	}
+
+	private void UpdateShape(int id) {
+		if (changeShape != null) {
+			changeShape(id);
 		}
 	}
 }
