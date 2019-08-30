@@ -48,11 +48,11 @@
 
                 float nz = noise(i.uv*10.0, 12.0, 4.0, floor(_Time.y), floor(_Time.y), 0.96);                
 				
-				float3 col = Planes(i.viewT);
+				float3 col = Planes(i.viewT, _Time.y);
 				if (_Background==2) {
-					col = Kali(i.viewT);
+					col = Kali(i.viewT, _Time.y);
 				} else if (_Background==3) {
-					col = Snow(normalize(float3(0.1,2.0,0.2)), i.uv*2.0, _ScreenParams.zw, i.viewT.y);
+					col = Snow(normalize(float3(0.1,2.0,0.2)), i.uv*2.0, _ScreenParams.zw, i.viewT.y, _Time.y);
 				}
                 col *= nz;
 

@@ -18,9 +18,11 @@ public class Lens : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (countdown>0) {
+		if (countdown>=0) {
 			material.SetFloat("_GlitchAmount", countdown);
 			countdown -= Time.deltaTime*1.0f;
+		} else {
+			material.SetFloat("_GlitchAmount", 0);
 		}
 	}
 

@@ -22,6 +22,7 @@
 			float2 uv_MainTex : TEXCOORD0;
 			float3 worldPos;
             float3 worldNormal;
+			float3 viewDir;
 		};
 
 		half4 LightingSimpleSpecular (SurfaceOutput s, half3 lightDir, half3 viewDir, half atten) {
@@ -70,18 +71,16 @@
 			pc += glow*av*w*w*w*w*w*5.0; //audio glow boost
 
 			//reflections
-			/*
 			float3 rrd = reflect(rd, IN.worldNormal);
-        	float fresnel = pow(clamp(1.0 + dot(rd, IN.worldNormal), 0.0, 1.0), 2.0);
-			float rCol = Planes(rrd);
+        	float fresnel = pow(clamp(1.0 + dot(rd, IN.worldNormal), 0.0, 1.0), 4.0);
+			float3 rCol = Planes(rrd, _Time.y);
 			if (_Background==2) {
-				rCol = Kali(rrd);
+				rCol = Kali(rrd, _Time.y);
 			} else if (_Background==3) {
-				rCol = Snow(float3(0.1,2.0,0.2), IN.uv_MainTex, _ScreenParams.zw, rrd.y);
+				//rCol = Snow(float3(0.1,2.0,0.2), IN.uv_MainTex*2.0, _ScreenParams.zw, rrd.y, _Time.y);
 			}
-			*/
 			
-			o.Albedo = pc;
+			o.Albedo = pc + rCol*fresnel;
 		}
 		ENDCG
 	}

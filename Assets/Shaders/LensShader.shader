@@ -85,7 +85,7 @@
 				float3 nzCol = float3(1,1,1) * (1.0 - nz); //snow noise
 				col = lerp(col, nzCol*nz3, _GlitchAmount*0.4);
 				col = lerp(tex2Dproj(_GrabTexture, i.grabUv).xyz, col, _GlitchAmount);
-				col.xyz *= sin((i.uv.y + _Time.x * _ScanShift) * _ScanFrequency) * 0.3 + 0.8; //scan lines
+				//col.xyz *= sin((i.uv.y + _Time.x * _ScanShift) * _ScanFrequency) * 0.3 + 0.8; //scan lines
 				col = pow(col, float3(1.0/2.2,1.0/2.2,1.0/2.2)); //gamma correction
 
 				return float4(col.x, col.y, col.z, 1.0);

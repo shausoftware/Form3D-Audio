@@ -645,10 +645,6 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'FORM-3D-Audio
 
-    Background: Planes
-
-    Press H for Help
-
 '
 --- !u!222 &1340574547
 CanvasRenderer:

@@ -40,14 +40,14 @@
             float3 rd = normalize(IN.worldPos - _WorldSpaceCameraPos);
 			float3 rrd = reflect(rd, IN.worldNormal);
         	float fresnel = pow(clamp(1.0 + dot(rd, IN.worldNormal), 0.0, 1.0), 4.0);
-			float rCol = Planes(rrd);
+			float3 rCol = Planes(rrd, _Time.y);
 			if (_Background==2) {
-				rCol = Kali(rrd);
+				rCol = Kali(rrd, _Time.y);
 			} else if (_Background==3) {
-				rCol = Snow(rrd, IN.uv_MainTex, _ScreenParams.zw, rd);
+				//rCol = Snow(rrd, IN.uv_MainTex, _ScreenParams.zw, rd, _Time.y);
 			}
 
-			o.Albedo = _Colour.rgb;
+			o.Albedo = _Colour.rgb + rCol*fresnel;
 		}
 
 		ENDCG
