@@ -23,8 +23,8 @@ public class CameraMovement : MonoBehaviour {
 		Vector3 bounceDirection = transform.position.normalized;
 		float rms = audioPlayer.GetRms();
 		float at32 = Time.time % BPMUtils.GetDuration(BPM, 32);
-		float wobble = Mathf.Sin(at32*28) * rms*0.6f;
-        wobble += Mathf.Sin(at32*28)*0.8f * //frequency and amplitude 
+		float wobble = Mathf.Sin(at32*28) * rms*0.4f;
+        wobble += Mathf.Sin(at32*28)*0.5f * //frequency and amplitude 
 		          Mathf.Max(1 - at32*0.5f, 0); //decay
 
 		transform.Translate(bounceDirection*wobble);
@@ -45,8 +45,8 @@ public class CameraMovement : MonoBehaviour {
 	/* Always want at least a bit of camera movement */
 	private float NewRandom() {
 		float nr = 0;
-		while (Mathf.Abs(nr) < 0.3) {
-			nr = Random.Range(-2, 2);
+		while (Mathf.Abs(nr) < 0.2) {
+			nr = Random.Range(-1, 1);
 		}
 		return nr;
 	}
