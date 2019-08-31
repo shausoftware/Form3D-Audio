@@ -28,6 +28,8 @@ public class MeshCombiner : MonoBehaviour {
 			combiners[i].subMeshIndex = 0;
             combiners[i].mesh = filters[i].sharedMesh;
 			combiners[i].transform = filters[i].transform.localToWorldMatrix;
+
+			filters[i].gameObject.SetActive(false);
 		}
 
 		Mesh finalMesh = new Mesh();
@@ -36,11 +38,6 @@ public class MeshCombiner : MonoBehaviour {
 
 		transform.rotation = oldRotation;
 		transform.position = oldPosition;
-
-        //TODO: move into first loop
-		for (int a = 0; a < transform.childCount; a++) {
-			transform.GetChild(a).gameObject.SetActive(false);
-		}
 
 		Debug.Log(name + " combine complete.");
 	}
