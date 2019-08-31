@@ -161,7 +161,7 @@ public class Spawn : MonoBehaviour {
     }
 
     private Vector3 LoxodromePosition(float fbranch, float fleaf) {
-        Vector3 pos = new Vector3(0,6,0);
+        Vector3 pos = new Vector3(0,8,0);
         pos = Quaternion.Euler(fleaf/Branches*90, 0, 0) * pos;
         return Quaternion.Euler(0, fbranch/Branches*360, 0) * pos;
     }
@@ -180,15 +180,11 @@ public class Spawn : MonoBehaviour {
         Vector3 scale = new Vector3(1,1,1);
         switch (currentPattern) {
             case PatternType.SHELL: {
-                scale *= 1 - fbranch*0.1f;
+                scale *= 1 - fbranch*0.08f;
                 break;
             }
             case PatternType.SQUID: {
-                scale *= 1 - fleaf*0.05f;
-                break;
-            }
-            case PatternType.RING: {
-                scale *= 1 - fbranch*0.05f;
+                scale *= 1 - fleaf*0.03f;
                 break;
             }
             default: {

@@ -4,6 +4,8 @@
 #define UI3 uint3(UI0, UI1, 2798796415U)
 #define UIF (1.0 / float(0xffffffffU))
 
+#define LP float3(30.0, 45.0, -22.0) 
+
 //Dave Hoskins - Hash without sin
 //https://www.shadertoy.com/view/XdGfRR
 float3 hash33(float3 p) {

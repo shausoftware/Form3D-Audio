@@ -50,19 +50,12 @@ public class FormGameObject : MonoBehaviour {
 
 		float db = audioPlayer.GetDb();
 		float rms = audioPlayer.GetRms();
-		float hz = audioPlayer.GetHz();
-		float bassTreble = (hz<200.0f) ? 1 : 0; //treble  = 1 - bassTreble
-		
-		float avs = 1.0f;
-		if (branchId%2 == 0) {
-	        //avs += Mathf.Pow(rms*2.0f,6) * bassTreble;
-			//avs += Mathf.Clamp(db*0.5f, 0, 1) * 0.05f * bass;
-		} else {
-		}
+		float hz = audioPlayer.GetHz();		
+		float avs = 1 + Mathf.Pow(rms*2.4f, 4) * ((hz>80) ? 1 : 0);
 
 		//position
-        float targetDistance = Vector3.Distance(transform.position, targetPosition);
-		transform.position = Vector3.Lerp(transform.position, targetPosition, 0.4f/targetDistance);
+        float targetDistance = Vector3.Distance(transform.position, targetPosition * avs);
+		transform.position = Vector3.Lerp(transform.position, targetPosition * avs, 0.5f/targetDistance);
 		//scale
         float targetScaleDelta = Vector3.Distance(transform.localScale, targetScale);
 		transform.localScale = Vector3.Lerp(transform.localScale, targetScale, 0.1f/targetScaleDelta);
@@ -76,9 +69,6 @@ public class FormGameObject : MonoBehaviour {
 	private void UpdateTargetPosition() {
 		
 		float elapsedTime = (Time.time - startTime) * 0.3f;
-		float rms = audioPlayer.GetRms();
-		float hz = audioPlayer.GetHz();
-		float bassTreble = (hz<200) ? 1 : 0; //treble  = 1 - bassTreble
 
 		switch (currentPattern) {
 			case PatternType.SHELL: {
@@ -86,7 +76,7 @@ public class FormGameObject : MonoBehaviour {
 				break;
 			}
 			case PatternType.LOXODROME: {
-				targetPosition = Quaternion.Euler(0, Mathf.Cos(elapsedTime) * 0.4f*leafId,0) * targetPosition; 
+				targetPosition = Quaternion.Euler(0, Mathf.Cos(elapsedTime) * 0.3f*leafId,0) * targetPosition; 
 			    break;
 			}
 			case PatternType.SQUID: {

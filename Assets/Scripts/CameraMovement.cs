@@ -40,8 +40,17 @@ public class CameraMovement : MonoBehaviour {
 	}
 
 	private void NewDirection() {
-		targetDirection= new Vector3(Random.Range(-1,1), 
-		                             Random.Range(-1,1),
-						             Random.Range(-1,1));
+		targetDirection= new Vector3(NewRandom(), 
+		                             NewRandom(),
+						             NewRandom());
 	} 
+
+	/* Always want at least a bit of camera movement */
+	private float NewRandom() {
+		float nr = 0;
+		while (Mathf.Abs(nr) < 0.3) {
+			nr = Random.Range(-2, 2);
+		}
+		return nr;
+	}
 }

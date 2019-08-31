@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4380a831a0e3b4d889278b21b6088202, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BPM: 140
 --- !u!20 &282840813
 Camera:
   m_ObjectHideFlags: 0
@@ -362,6 +363,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Shape: 1
   Quality: 1
+  BPM: 140
   SpawnCube: {fileID: 1452261751334050, guid: 2a0ffaeae1ea44841834148d5030a8f3, type: 2}
   SpawnSphere: {fileID: 1529492737074552, guid: 2dba35327cb4c41ec8202825ff075b81,
     type: 2}
@@ -393,7 +395,7 @@ Transform:
   m_GameObject: {fileID: 1050077702}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 20}
-  m_LocalScale: {x: 120, y: 120, z: 1}
+  m_LocalScale: {x: 140, y: 140, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -499,11 +501,11 @@ Prefab:
       objectReference: {fileID: 2100000, guid: a364021922e3246d78c1aa0e94cf14a3, type: 2}
     - target: {fileID: 4308679072954904, guid: 9096ec939f6e441ce9df8f029a15feba, type: 2}
       propertyPath: m_LocalScale.x
-      value: 120
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 4308679072954904, guid: 9096ec939f6e441ce9df8f029a15feba, type: 2}
       propertyPath: m_LocalScale.y
-      value: 120
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 1868076460425092, guid: 9096ec939f6e441ce9df8f029a15feba, type: 2}
       propertyPath: m_IsActive

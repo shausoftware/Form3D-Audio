@@ -6,52 +6,72 @@
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
+		LOD 100
 
-		CGPROGRAM
-		#pragma surface surf SimpleSpecular
-		#include "FormCommon.glslinc"
+		Pass {
+			CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
+			
+			#include "UnityCG.cginc"
+			#include "FormCommon.glslinc"
 
-		sampler2D _MainTex;
-		fixed4 _Colour;
-		int _Background;
+			struct appdata {
+				float4 vertex : POSITION;
+				float2 uv : TEXCOORD0;
+				float3 normal : NORMAL;
+			};
 
-		struct Input {
-			float2 uv_MainTex : TEXCOORD0;
-			float3 worldPos;
-            float3 worldNormal;
-		};
+			struct v2f {
+				float2 uv : TEXCOORD0;
+				float4 vertex : SV_POSITION;
+				float3 viewT : TEXCOORD1;
+				half3 worldNormal : TEXCOORD2;
+				float4 worldSpacePos : TEXCOORD3;
+			};
 
-		half4 LightingSimpleSpecular (SurfaceOutput s, half3 lightDir, half3 viewDir, half atten) {
-			half3 h = normalize (lightDir + viewDir);
+			sampler2D _MainTex;
+			float4 _MainTex_ST;
+			fixed4 _Colour;
+		    int _Background;
 
-			half diff = max (0, dot (s.Normal, lightDir));
-
-			float nh = max (0, dot (s.Normal, h));
-			float spec = pow (nh, 48.0);
-
-			half4 c;
-			c.rgb = (s.Albedo * _LightColor0.rgb * diff + _LightColor0.rgb * spec) * atten;
-			c.a = s.Alpha;
-			return c;
-		}
-		void surf (Input IN, inout SurfaceOutput o) {
-
-			//reflections
-            float3 rd = normalize(IN.worldPos - _WorldSpaceCameraPos);
-			float3 rrd = reflect(rd, IN.worldNormal);
-        	float fresnel = pow(clamp(1.0 + dot(rd, IN.worldNormal), 0.0, 1.0), 8.0);
-			float3 rCol = Planes(rrd, _Time.y);
-			if (_Background==2) {
-				rCol = Kali(rrd, _Time.y);
-			} else if (_Background==3) {
-				rCol = Snow(normalize(float3(0.1,1.0,0.2)), IN.uv_MainTex, _ScreenParams.zw, rrd.y, _Time.y);
-				rCol = clamp(rCol, float3(0,0,0), float3(1,1,1));
+			v2f vert (appdata v) {
+				v2f o;
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.worldSpacePos = mul(unity_ObjectToWorld, v.vertex);
+				return o;
 			}
+			
+			fixed4 frag (v2f i) : SV_Target {
 
-			o.Albedo = _Colour.rgb + rCol*fresnel;
+				float3 pos = i.worldSpacePos,
+				       rd = normalize(pos - _WorldSpaceCameraPos),
+				       ld = normalize(LP - pos);
+			    float df = max(0.001, dot(ld, i.worldNormal)),
+				      spec = pow(max(dot(reflect(-ld, i.worldNormal), -rd), 0.0), 64.0),
+					  fresnel = pow(clamp(1.0 + dot(rd, i.worldNormal), 0.0, 1.0), 4.0);
+
+			    float3 pc = _Colour.rgb*df;
+
+				//reflections
+			    float3 rrd = reflect(rd, i.worldNormal);
+				float3 rCol = Planes(rrd, _Time.y);
+				if (_Background==2) {
+					rCol = Kali(rrd, _Time.y);
+				} else if (_Background==3) {
+					rCol = Snow(normalize(float3(0.1,1.0,0.2)), i.uv, _ScreenParams.zw, rrd.y, _Time.y);
+					rCol = clamp(rCol, float3(0,0,0), float3(1,1,1));
+				}
+				pc += rCol*0.4*fresnel;
+
+				//specular
+				pc += float3(1.0,0.8,0.5)*spec;
+
+				return float4(pc, 1);
+			}
+			ENDCG
 		}
-
-		ENDCG
 	}
-	FallBack "Diffuse"
 }
