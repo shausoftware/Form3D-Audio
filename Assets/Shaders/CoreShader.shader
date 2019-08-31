@@ -66,18 +66,19 @@
 			float w = sphDensity(IN.worldPos, rd, float4(_FormObject.xyz, r), 20.0);
 			
             float3 glow = PT(_Time.x + _Animation.z); //glow colour 
-			float av = clamp(_Animation.x*0.5, 0.0, 3.0);
+			float av = clamp(_Animation.x*1.0, 0.0, 3.0);
 			float3 pc = glow*0.1 + glow*pow(w, 8.0); //glow
 			pc += glow*av*w*w*w*w*w*5.0; //audio glow boost
 
 			//reflections
 			float3 rrd = reflect(rd, IN.worldNormal);
-        	float fresnel = pow(clamp(1.0 + dot(rd, IN.worldNormal), 0.0, 1.0), 4.0);
+        	float fresnel = pow(clamp(1.0 + dot(rd, IN.worldNormal), 0.0, 1.0), 8.0);
 			float3 rCol = Planes(rrd, _Time.y);
 			if (_Background==2) {
 				rCol = Kali(rrd, _Time.y);
 			} else if (_Background==3) {
-				//rCol = Snow(float3(0.1,2.0,0.2), IN.uv_MainTex*2.0, _ScreenParams.zw, rrd.y, _Time.y);
+				rCol = Snow(normalize(float3(0.1,1.0,0.2)), IN.uv_MainTex, _ScreenParams.zw, rrd.y, _Time.y);
+				rCol = clamp(rCol, float3(0,0,0), float3(1,1,1));
 			}
 			
 			o.Albedo = pc + rCol*fresnel;

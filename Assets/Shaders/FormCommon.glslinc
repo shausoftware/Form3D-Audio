@@ -34,10 +34,10 @@ float3 Kali(float3 rd, float T) {
     float k = 0.0;
     for (float i = 0.0; i < 7.0; i++) {
         rd = abs(rd) / dot(rd, rd) - 0.63;
-        k += length(rd) * length(hash33(rd + T*0.1));
-        pc += lerp(PT((i/7.0) + T*0.2), PT((1.0 - i/7.0) - T*.3), i/7.0) * k*k*k * 0.0003;
+        k += length(rd) * length(hash33(rd*3.0 + T*0.1));
+        pc += lerp(PT((i/7.0) + T*0.2), PT((1.0 - i/7.0) - T*.3), i/7.0) * k*k*k * 0.0001;
     }
-    return pc*0.04;
+    return pc*0.003;
 }
 
 float3 Planes(float3 rd, float T) {
@@ -49,10 +49,10 @@ float3 Planes(float3 rd, float T) {
     float3 pc = PT(fla*4.0+T)*16.0; //mix colours radially
     pc += (step(0.1, fra) * step(fra, 0.2)) * 16.0;
     pc += (step(0.8, fra) * step(fra, 0.9)) * 16.0;
-    float mt = (abs(rd.y) + frnd * 4.0 - T * 0.01) % 0.3; //split segments
+    float mt = (abs(rd.y) + frnd * 4.0) % 0.3; //split segments
     pc *= step(mt, 0.16) * mt; //split segments
-    pc *= step(0.1, fra) * step(fra, 0.9); //edges
-    return pc*0.3 * max(abs(rd.y), 0.); //fade middle
+    pc *= smoothstep(0.1, 0.12, fra) * smoothstep(0.9, 0.88, fra); //edges
+    return pc * abs(rd.y*rd.y*0.1); //fade middle
 }
 
 // particles (Andrew Baldwin)

@@ -2,28 +2,32 @@
 using UnityEngine;
 using System;
 
-public enum PatternType {SHELL=1, LOXODROME, SQUID, RING, GRID}; 
+public enum PatternType {SHELL, LOXODROME, SQUID, RING}; 
 
 public class Spawn : MonoBehaviour {
 
     [Range(1, 2)]
     public int Shape = 1; //1 Cube, 2 Sphere
+    [Range(1, 3)]
+    public int Quality = 1; //1 Low, 2 High   
+    public float BPM = 140;
     public GameObject SpawnCube;  
     public GameObject SpawnSphere; 
-    [Range(1, 10)]
-    public int Branches = 6;
-    [Range(2, 20)]
-    public int Leaves = 15;
-
+    
+    private int Branches = 6;
+    private int Leaves = 15;
     private List<List<FormGameObject>> branches = new List<List<FormGameObject>>(); 
     private bool initMe = true; 
     private PatternType currentPattern;
-    private TimerUtils timerUtils = new TimerUtils(27.4285715f); //change scene every 64 beats at 140 BPM
+    private TimerUtils timerUtils;
 
     void Awake() {
+        //Physics.autoSimulation = false;
+        timerUtils = new TimerUtils(BPMUtils.GetDuration(BPM, 64)); //change scene every 64 beats at 140 BPM
         initMe = true;
         Keyboard.reset += Reset;
         Keyboard.changeShape += UpdateShape;
+        Keyboard.changeQuality += UpdateQuality;
     }
 
     void Update() {
@@ -39,6 +43,7 @@ public class Spawn : MonoBehaviour {
     void OnDisable() {
 		Keyboard.reset -= Reset;
         Keyboard.changeShape -= UpdateShape;
+        Keyboard.changeQuality -= UpdateQuality;
 	} 
 
     void Reset() {
@@ -48,6 +53,27 @@ public class Spawn : MonoBehaviour {
     void UpdateShape(int shapeId) {
         Shape = shapeId;
         ClearScene();
+        InitScene();
+        UpdateScene(true);
+    }
+
+    void UpdateQuality(int qualityId) {
+        ClearScene();
+        switch (qualityId) {
+            case 1: {
+                Branches = 6;
+                Leaves = 15;
+                break;
+            }
+            case 2: {
+                Branches = 10;
+                Leaves = 20;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
         InitScene();
         UpdateScene(true);
     }
@@ -70,7 +96,7 @@ public class Spawn : MonoBehaviour {
         for (int branch = 0; branch < Branches; branch++) {
             List<FormGameObject> leaves = new List<FormGameObject>();
             for (int leaf = 0; leaf < Leaves; leaf++) {
-                GameObject instance = Instantiate(spawnObject, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+                GameObject instance = Instantiate(spawnObject, new Vector3(0,0,0), Quaternion.identity);
                 FormGameObject FGO = instance.GetComponent<FormGameObject>();
                 FGO.InitFormObject(branch, leaf);
                 leaves.Add(FGO);
@@ -81,7 +107,7 @@ public class Spawn : MonoBehaviour {
 
     private void UpdateScene(bool reset) {
         NextPatternType();
-        //currentPattern = PatternType.GRID;
+        //currentPattern = PatternType.RING;
         for (int branch = 0; branch < Branches; branch++) {
             List<FormGameObject> leaves = branches[branch];
             for (int leaf = 0; leaf < Leaves; leaf++) {
@@ -107,23 +133,19 @@ public class Spawn : MonoBehaviour {
         Vector3 formPosition = Vector3.zero;
         switch (currentPattern) {
             case PatternType.SHELL: {
-                formPosition = ShellPosition((float) branch, (float) leaf);
+                formPosition = ShellPosition(branch, leaf);
                 break;
             }
             case PatternType.LOXODROME: {
-                formPosition = LoxodromePosition((float) branch, (float) leaf);
+                formPosition = LoxodromePosition(branch, leaf);
                 break;    
             }
             case PatternType.SQUID: {
-                formPosition = SquidPosition((float) branch, (float) leaf);
+                formPosition = SquidPosition(branch, leaf);
                 break;
             }
             case PatternType.RING: {
-                formPosition = RingPosition((float) branch, (float) leaf);
-                break;
-            }
-            case PatternType.GRID: {
-                formPosition = GridPosition((float) branch, (float) leaf);
+                formPosition = RingPosition(branch, leaf);
                 break;
             }
             default: {
@@ -134,49 +156,39 @@ public class Spawn : MonoBehaviour {
     }
 
     private Vector3 ShellPosition(float fbranch, float fleaf) {
-        float xPos = 2.0f + fbranch*1.5f;
-        return Quaternion.Euler(0, fleaf/Leaves*360.0f, 0) * new Vector3(xPos, 0.0f, 0.0f); //create ring
+        float xPos = 2 + fbranch*1.5f;
+        return Quaternion.Euler(0, fleaf/Leaves*360, 0) * new Vector3(xPos, 0,0); //create ring
     }
 
     private Vector3 LoxodromePosition(float fbranch, float fleaf) {
-        Vector3 pos = new Vector3(0f, 6f, 0f);
-        pos = Quaternion.Euler(fleaf/Branches*90.0f, 0, 0) * pos;
-        return Quaternion.Euler(0, fbranch/Branches*360.0f, 0) * pos;
+        Vector3 pos = new Vector3(0,6,0);
+        pos = Quaternion.Euler(fleaf/Branches*90, 0, 0) * pos;
+        return Quaternion.Euler(0, fbranch/Branches*360, 0) * pos;
     }
 
     private Vector3 SquidPosition(float fbranch, float fleaf) {
-        float a = fbranch / (float) Branches;
-        return Quaternion.Euler(0, 0, a*360.0f) * new Vector3(0.0f, fleaf*0.5f, 0.0f);
+        float a = fbranch / Branches;
+        return Quaternion.Euler(0,0, a*360) * new Vector3(0, fleaf*0.5f, 0);
     }
 
     private Vector3 RingPosition(float fbranch, float fleaf) {
-        float a = (fbranch*(float) Leaves + fleaf) / ((float) Branches * (float) Leaves);
-        return Quaternion.Euler(0, 0, a*360.0f) * new Vector3(0.0f, 9.0f, 0.0f);
-    }
-
-    private Vector3 GridPosition(float fbranch, float fleaf) {
-        return new Vector3(2.0f*(fbranch - (float) Branches*0.5f), 2.0f*(fleaf - (float) Leaves*0.5f), 0.0f);
+        float a = (fbranch*Leaves + fleaf) / Branches * Leaves;
+        return Quaternion.Euler(0,0, a*360) * new Vector3(0,9,0);
     }
 
     private Vector3 TargetScale(float fbranch, float fleaf) {
-        Vector3 scale = new Vector3(1.0f, 1.0f, 1.0f);
+        Vector3 scale = new Vector3(1,1,1);
         switch (currentPattern) {
             case PatternType.SHELL: {
-                scale *= 1.0f - fbranch*0.1f;
-                break;
-            }
-            case PatternType.LOXODROME: {
+                scale *= 1 - fbranch*0.1f;
                 break;
             }
             case PatternType.SQUID: {
-                scale *= 1.0f - fleaf*0.05f;
+                scale *= 1 - fleaf*0.05f;
                 break;
             }
             case PatternType.RING: {
-                scale *= 1.0f - fbranch*0.05f;
-                break;
-            }
-            case PatternType.GRID: {
+                scale *= 1 - fbranch*0.05f;
                 break;
             }
             default: {

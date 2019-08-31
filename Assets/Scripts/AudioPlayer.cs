@@ -48,8 +48,8 @@ public class AudioPlayer : MonoBehaviour {
 		return hz;
 	}
 
-	private float maxDB = -160.0f;
-	private float maxHz = 0.0f;
+	private float maxDB = -160;
+	private float maxHz = 0;
 
 	//https://answers.unity.com/questions/157940/getoutputdata-and-getspectrumdata-they-represent-t.html
 	private void AnalyseAudio() {

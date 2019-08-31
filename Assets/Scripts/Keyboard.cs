@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Keyboard : MonoBehaviour {
 
@@ -12,6 +10,8 @@ public class Keyboard : MonoBehaviour {
 	public static event Reset reset; 
 	public delegate void ChangeShape(int shapeId);
 	public static event ChangeShape changeShape;
+	public delegate void ChangeQuality(int qualityId);
+	public static event ChangeQuality changeQuality;
 
 	#region Singleton
 	private static Keyboard _instance;
@@ -34,15 +34,19 @@ public class Keyboard : MonoBehaviour {
 		if (Input.GetKeyDown("3")) {
 			UpdateBackground(3);
 		}
+		//Shapes
 		if (Input.GetKeyDown("4")) {
 			UpdateShape(1);
 		} 
 		if (Input.GetKeyDown("5")) {
 			UpdateShape(2);
 		} 
+		//Quality
 		if (Input.GetKeyDown("6")) {
+			UpdateQuality(1);
 		} 
 		if (Input.GetKeyDown("7")) {
+			UpdateQuality(2);
 		} 
 
 		//Help
@@ -65,10 +69,16 @@ public class Keyboard : MonoBehaviour {
 			changeBackground(id);
 		}
 	}
-
+	
 	private void UpdateShape(int id) {
 		if (changeShape != null) {
 			changeShape(id);
+		}
+	}
+
+	private void UpdateQuality(int id) {
+		if (changeQuality != null) {
+			changeQuality(id);
 		}
 	}
 }

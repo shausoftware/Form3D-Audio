@@ -69,8 +69,8 @@ Material:
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _ScanFrequency: 2000
-    - _ScanShift: 0.8
+    - _ScanFrequency: 1800
+    - _ScanShift: 0.2
     - _Shift: 2.34
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

@@ -2,31 +2,33 @@
 
 public class CameraMovement : MonoBehaviour {
 
-    private TimerUtils timerUtils = new TimerUtils(6.857142f); //chane camera direction every 8 beats at 140 BPM
+	public float BPM = 140;
+
+    private TimerUtils timerUtils;
 	private Vector3 targetDirection = Vector3.zero;
 	private AudioPlayer audioPlayer;
 	private GameObject background;
 
 	void Start() {
-		transform.LookAt(Vector3.zero);
+		timerUtils  = new TimerUtils(BPMUtils.GetDuration(BPM, 8));
 		audioPlayer = FindObjectOfType<AudioPlayer>();
 		background = GameObject.Find("Background");
 	}
 
 	void Update () {
+		//change camera rotation direction
 		if (timerUtils.ReadyToUpdate()) {
             NewDirection();
 		}
 
+		//camera wobble
 		Vector3 bounceDirection = transform.position.normalized;
-		float db = audioPlayer.GetDb();
-		float hz = audioPlayer.GetHz();		
-		float at64 = Time.time % 27.4285753f; //64 beats
-		float st = Mathf.Max(at64 - 13.7142877f, 0); //start time
-        float wobble = Mathf.Sin(at64*28) * 1.0f * //frequency and amplitude 
-		               Mathf.Min(1, st) * //start time ramps up to 1
-		               Mathf.Max(1 - st*0.6f, 0); //decay
-		//TODO: multiply bu amplitude
+		float rms = audioPlayer.GetRms();
+		float at32 = Time.time % BPMUtils.GetDuration(BPM, 32);
+		float wobble = Mathf.Sin(at32*28) * rms*0.6f;
+        wobble += Mathf.Sin(at32*28) * 0.8f * //frequency and amplitude 
+		          Mathf.Max(1 - at32*0.6f, 0); //decay
+
 		transform.Translate(bounceDirection*wobble);
 		transform.RotateAround(Vector3.zero, targetDirection, 20 * Time.deltaTime);
 		background.transform.RotateAround(Vector3.zero, targetDirection, 20 * Time.deltaTime);
@@ -38,8 +40,8 @@ public class CameraMovement : MonoBehaviour {
 	}
 
 	private void NewDirection() {
-		targetDirection= new Vector3(Random.Range(-1f, 1f), 
-		                             Random.Range(-1f, 1f),
-						             Random.Range(-1f, 1f));
+		targetDirection= new Vector3(Random.Range(-1,1), 
+		                             Random.Range(-1,1),
+						             Random.Range(-1,1));
 	} 
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Lens : MonoBehaviour {
 
@@ -11,6 +9,7 @@ public class Lens : MonoBehaviour {
 		material = transform.GetComponent<Renderer>().material; //lens material
 		Keyboard.changeBackground += UpdateShaderBackground;
 		Keyboard.changeShape += UpdateShape;
+		Keyboard.changeQuality += UpdateQuality;
 		Keyboard.reset += Reset;
 	}
 
@@ -28,6 +27,8 @@ public class Lens : MonoBehaviour {
 
 	void OnDisable() {
 		Keyboard.changeBackground -= UpdateShaderBackground;
+		Keyboard.changeShape += UpdateShape;
+		Keyboard.changeQuality += UpdateQuality;
 		Keyboard.reset -= Reset;
 	} 
 
@@ -36,6 +37,10 @@ public class Lens : MonoBehaviour {
 	}
 
 	void UpdateShape(int shapeId) {
+		StartCountdown();
+	}
+
+	void UpdateQuality(int qualityId) {
 		StartCountdown();
 	}
 

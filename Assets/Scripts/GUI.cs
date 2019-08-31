@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class GUI : MonoBehaviour {
@@ -14,17 +12,20 @@ public class GUI : MonoBehaviour {
 									"Key 'h' to hide help text.";
 	private static readonly string[] backgrounds = {"Background: Planes\n","Background: Kali Fractal\n","Background: Snow\n"};
 	private static readonly string[] shapes = {"Shape: Cubes\n","Shape: Spheres\n"};
+	private static readonly string[] qualities = {"Quality: Low\n", "Quality: High\n"};
 	
 	private Text guiText;
 	private int currentBackgroundId = 1;
 	private int currentShapeId = 1;
+	private int currentQualityId = 1;
 	private bool helpOpen = false;
 
 	void Awake () {
 		guiText = GetComponentInChildren<Text>();
 		Keyboard.changeBackground += UpdateShaderBackground;
 		Keyboard.changeShape += UpdateShape;
-		Keyboard.help += DisplayHelp;		
+		Keyboard.changeQuality += UpdateQuality;		
+		Keyboard.help += DisplayHelp;
 	}
 
 	void Start() {
@@ -33,6 +34,7 @@ public class GUI : MonoBehaviour {
 	void Update () {
 		string message = title + backgrounds[currentBackgroundId - 1];
 		message += shapes[currentShapeId - 1];
+		message += qualities[currentQualityId - 1];
 		message += helpOpen ? helpText : openHelp;
 		guiText.text = message;
 	}
@@ -40,6 +42,7 @@ public class GUI : MonoBehaviour {
 	void OnDisable() {
 		Keyboard.changeBackground -= UpdateShaderBackground;
 		Keyboard.changeShape -= UpdateShape;
+		Keyboard.changeQuality -= UpdateQuality;		
 		Keyboard.help -= DisplayHelp;
 	} 
 
@@ -49,6 +52,10 @@ public class GUI : MonoBehaviour {
 
 	void UpdateShape(int shapeId) {
 		currentShapeId = shapeId;
+	}
+
+	void UpdateQuality(int qualityId) {
+		currentQualityId = qualityId;
 	}
 
 	void DisplayHelp() {
