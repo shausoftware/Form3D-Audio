@@ -11,4 +11,6 @@ BackgroundShader: The background shader is displayed on a simple quad (not a lig
 
 LensShader: Provides a VGA monitor and scene transition effects.
 
+All of these shaders are implemented as Unlit shaders (all lighting is calculated within the shader) thus reducing some the overhead of the Unity rendering pipeline.
+
 PC & Mac distibutions are provided in the /dist folder 
