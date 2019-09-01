@@ -55,7 +55,7 @@ public class FormGameObject : MonoBehaviour {
 
 		//position
         float targetDistance = Vector3.Distance(transform.position, targetPosition * avs);
-		transform.position = Vector3.Lerp(transform.position, targetPosition * avs, 0.5f/targetDistance);
+		transform.position = Vector3.Lerp(transform.position, targetPosition * avs, 0.4f/targetDistance);
 		//scale
         float targetScaleDelta = Vector3.Distance(transform.localScale, targetScale);
 		transform.localScale = Vector3.Lerp(transform.localScale, targetScale, 0.1f/targetScaleDelta);
@@ -86,8 +86,8 @@ public class FormGameObject : MonoBehaviour {
 			    break;
 			}
 			case PatternType.RING: {
-				float a = Mathf.Cos(elapsedTime) * 0.2f*leafId * Mathf.Sign((leafId%2) -1);
-				float b = Mathf.Cos(elapsedTime*3.2f) * 0.4f*branchId;
+				float a = Mathf.Cos(elapsedTime*0.8f) * 0.2f*leafId * Mathf.Sign((leafId%2) -1);
+				float b = Mathf.Cos(elapsedTime*1.2f) * 0.4f*branchId;
 				targetPosition = Quaternion.Euler(0,0,a) * targetPosition; 
 				targetPosition = Quaternion.Euler(0,b,0) * targetPosition; 
 			    break;

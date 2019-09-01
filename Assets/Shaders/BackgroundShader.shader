@@ -52,7 +52,7 @@
 				if (_Background==2) {
 					col = Kali(i.viewT, _Time.y);
 				} else if (_Background==3) {
-					col = Snow(normalize(float3(0.1,2.0,0.2)), i.uv*2.0, _ScreenParams.zw, i.viewT.y, _Time.y);
+					col = Snow(normalize(float3(0.10,2.0,0.2)), i.uv*2.0, _ScreenParams.zw, i.viewT.y, _Time.y);
 				}
                 col *= nz;
 

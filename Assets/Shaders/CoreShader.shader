@@ -71,7 +71,7 @@
 				float3 pos = i.worldSpacePos,
 				       rd = normalize(pos - _WorldSpaceCameraPos),
 				       ld = normalize(LP - pos),
-					   glow = PT(_Time.x + _Animation.z); //glow colour 
+					   glow = PT2(_Time.x + _Animation.z + _Animation.w); //glow colour 
 			    float r = length(pos - _FormObject.xyz), //radius of sphere
 			          w = sphDensity(pos, rd, float4(_FormObject.xyz, r), 20.0),
 				      av = clamp(_Animation.x*1.0, 0.0, 3.0),			  
@@ -81,7 +81,7 @@
 
 			    float3 pc = glow*0.1*df;
 				pc += glow*pow(w, 8.0);
-				pc += glow*av*w*w*w*w*w*5.0;
+				pc += glow*av*w*w*w*w*w*3.0;
 
 			    //reflections
 			    float3 rrd = reflect(rd, i.worldNormal);

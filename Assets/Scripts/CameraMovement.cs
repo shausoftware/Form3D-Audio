@@ -27,6 +27,8 @@ public class CameraMovement : MonoBehaviour {
         wobble += Mathf.Sin(at32*28)*0.5f * //frequency and amplitude 
 		          Mathf.Max(1 - at32*0.5f, 0); //decay
 
+		Vector3 targetPosition = transform.position.normalized*22.0f;
+		transform.position = Vector3.Lerp(transform.position, targetPosition, 0.03f); //prevent camera drifting
 		transform.Translate(bounceDirection*wobble);
 		transform.RotateAround(Vector3.zero, targetDirection, 20 * Time.deltaTime);
 		transform.LookAt(Vector3.zero);
