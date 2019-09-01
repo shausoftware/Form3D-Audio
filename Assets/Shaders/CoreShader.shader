@@ -74,7 +74,7 @@ Shader "Form/CoreShader" {
 				float3 pos = i.worldSpacePos,
 				       rd = normalize(pos - _WorldSpaceCameraPos),
 				       ld = normalize(LP - pos),
-					   glow = PT2(_Time.x + _Animation.z + _Animation.w); //glow colour 
+					   glow = PT(_Time.x + _Animation.z + _Animation.w); //glow colour 
 			    float r = length(pos - _FormObject.xyz), //radius of sphere
 			          w = sphDensity(pos, rd, float4(_FormObject.xyz, r), 20.0),
 				      av = clamp(_Animation.x*1.0, 0.0, 3.0),			  
