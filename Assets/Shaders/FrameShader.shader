@@ -1,4 +1,7 @@
-﻿Shader "Form/FrameShader" {
+﻿// Created by SHAU - 2019
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
+Shader "Form/FrameShader" {
 	Properties {
 		_MainTex ("Texture", 2D) = "white" {}
 		_Colour ("Colour", Color) = (1,1,1,1)
@@ -54,6 +57,9 @@
 					  fresnel = pow(clamp(1.0 + dot(rd, i.worldNormal), 0.0, 1.0), 4.0);
 
 			    float3 pc = _Colour.rgb*df;
+
+				//over light
+				pc += float3(0.2, 0, 1) * i.worldNormal*0.005;
 
 				//reflections
 			    float3 rrd = reflect(rd, i.worldNormal);

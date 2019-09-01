@@ -1,5 +1,8 @@
 ﻿using UnityEditor;
 
+// Created by SHAU - 2019
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
 public static class MeshCombinerEditor {
 		
 	[MenuItem("CONTEXT/MeshCombiner/Show Mesh Count")]

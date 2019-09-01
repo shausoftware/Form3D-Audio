@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// Created by SHAU - 2019
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
 public class GUI : MonoBehaviour {
 
 	private const string title = "FORM-3D-Audio\n";

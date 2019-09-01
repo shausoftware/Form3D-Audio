@@ -1,4 +1,7 @@
-﻿Shader "Form/CoreShader" {
+﻿// Created by SHAU - 2019
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
+Shader "Form/CoreShader" {
 	Properties {
 		_MainTex ("Texture", 2D) = "white" {}
 		_FormObject ("Form Object", Vector) = (0,0,0,0)
@@ -82,6 +85,9 @@
 			    float3 pc = glow*0.1*df;
 				pc += glow*pow(w, 8.0);
 				pc += glow*av*w*w*w*w*w*3.0;
+
+				//over light
+				pc += float3(0.2, 0, 1) * i.worldNormal*0.005;
 
 			    //reflections
 			    float3 rrd = reflect(rd, i.worldNormal);

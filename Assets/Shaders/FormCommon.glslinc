@@ -1,3 +1,6 @@
+// Created by SHAU - 2019
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
 #define UI0 1597334673U
 #define UI1 3812015801U
 #define UI2 uint2(UI0, UI1)
@@ -43,7 +46,7 @@ float3 Kali(float3 rd, float T) {
         k += length(rd) * length(hash33(rd*3.0 + T*0.1));
         pc += lerp(PT((i/7.0) + T*0.2)*2.0, PT((1.0 - i/7.0) - T*0.3), i/7.0) * k*k*k * 0.0001;
     }
-    return pc*0.003;
+    return pc*0.01;
 }
 
 float3 Planes(float3 rd, float T) {
@@ -58,7 +61,7 @@ float3 Planes(float3 rd, float T) {
     float mt = (abs(rd.y) + frnd * 4.0) % 0.3; //split segments
     pc *= step(mt, 0.16) * mt; //split segments
     pc *= smoothstep(0.1, 0.12, fra) * smoothstep(0.9, 0.88, fra); //edges
-    return pc * abs(rd.y*rd.y*0.1); //fade middle
+    return pc * abs(rd.y*rd.y*0.3); //fade middle
 }
 
 // particles (Andrew Baldwin)

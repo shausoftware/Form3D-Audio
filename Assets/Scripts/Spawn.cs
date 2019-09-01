@@ -2,6 +2,9 @@
 using UnityEngine;
 using System;
 
+// Created by SHAU - 2019
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
 public enum PatternType {SHELL, LOXODROME, SQUID, RING}; 
 
 public class Spawn : MonoBehaviour {
