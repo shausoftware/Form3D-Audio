@@ -90,7 +90,6 @@
 					rCol = Kali(rrd, _Time.y);
 				} else if (_Background==3) {
 					rCol = Snow(normalize(float3(0.1,1.0,0.2)), i.uv, _ScreenParams.zw, rrd.y, _Time.y);
-					rCol = clamp(rCol, float3(0,0,0), float3(1,1,1));
 				}
 				pc += rCol*fresnel;
 
