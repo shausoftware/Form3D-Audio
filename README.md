@@ -3,9 +3,9 @@ An audio reactive toy based on the old 90's DOS Genetic Art program 'Form' by An
 
 ![Screenshot](dist/Screenshot.png)
 
-CoreShader: Implements bespoke ambient, diffuse and specular lighting with real environmental fresnel reflections. The core also implements a glow effect that is responsive to the music playing. 
+CoreShader: Implements bespoke ambient, diffuse and specular lighting with environmental fresnel reflections. The core also implements a glow effect that is responsive to the music playing. 
 
-FrameShader: Implements bespoke ambient, diffuse and specular lighting with real environmental fresnel reflections.
+FrameShader: Implements bespoke ambient, diffuse and specular lighting with environmental fresnel reflections.
 
 BackgroundShader: The background shader is displayed on a simple quad (not a lightbox) that is resposive to the camera position.
 

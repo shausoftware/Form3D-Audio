@@ -50,7 +50,7 @@ public class CameraMovement : MonoBehaviour {
 	/* Always want at least a bit of camera movement */
 	private float NewRandom() {
 		float nr = 0;
-		while (Mathf.Abs(nr) < 0.2) {
+		while (Mathf.Abs(nr) < 0.05) {
 			nr = Random.Range(-1, 1);
 		}
 		return nr;

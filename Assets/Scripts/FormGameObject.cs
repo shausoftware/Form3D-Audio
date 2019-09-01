@@ -58,7 +58,7 @@ public class FormGameObject : MonoBehaviour {
 
 		//position
         float targetDistance = Vector3.Distance(transform.position, targetPosition * avs);
-		transform.position = Vector3.Lerp(transform.position, targetPosition * avs, 0.4f/targetDistance);
+		transform.position = Vector3.Lerp(transform.position, targetPosition * avs, 0.5f/targetDistance);
 		//scale
         float targetScaleDelta = Vector3.Distance(transform.localScale, targetScale);
 		transform.localScale = Vector3.Lerp(transform.localScale, targetScale, 0.1f/targetScaleDelta);
@@ -79,7 +79,7 @@ public class FormGameObject : MonoBehaviour {
 				break;
 			}
 			case PatternType.LOXODROME: {
-				targetPosition = Quaternion.Euler(0, Mathf.Cos(elapsedTime) * 0.3f*leafId,0) * targetPosition; 
+				targetPosition = Quaternion.Euler(0, Mathf.Cos(elapsedTime*0.4f) * 0.3f*leafId,0) * targetPosition; 
 			    break;
 			}
 			case PatternType.SQUID: {
