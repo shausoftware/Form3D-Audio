@@ -65,6 +65,12 @@ public class Keyboard : MonoBehaviour {
 				reset();
 			}
 		}
+
+		//Quit
+		if (Input.GetKeyDown("escape")) {
+			Debug.Log("escape");
+			Application.Quit();
+		}
 	}
 
 	private void UpdateBackground(int id) {

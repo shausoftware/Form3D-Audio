@@ -1,7 +1,7 @@
 # Form3D-Audio
 An audio reactive toy based on the old 90's DOS Genetic Art program 'Form' by Andrew Rowbottom. Re-developed in Unity 5 it demonstrates the use of custom shaders within the Unity framework.
 
-![Screenshot](dist/Screenshot.png)
+![Screenshot](dist/images/Screenshot.png)
 
 CoreShader: Implements bespoke ambient, diffuse and specular lighting with environmental fresnel reflections. The core also implements a glow effect that is responsive to the music playing. 
 

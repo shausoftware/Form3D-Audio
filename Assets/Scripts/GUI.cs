@@ -13,7 +13,7 @@ public class GUI : MonoBehaviour {
 									"Keys 6,7 change quality.\n" +
 									"Key 'r' to reset.\n" +
 									"Key 'h' to hide help text.\n" +
-									"CMD+Q to Quit.";
+									"esc to Quit.";
 	private static readonly string[] backgrounds = {"Background: Planes\n","Background: Kali Fractal\n","Background: Snow\n"};
 	private static readonly string[] shapes = {"Shape: Cubes\n","Shape: Spheres\n"};
 	private static readonly string[] qualities = {"Quality: High\n", "Quality: Low\n"};
