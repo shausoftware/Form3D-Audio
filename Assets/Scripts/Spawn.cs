@@ -12,13 +12,13 @@ public class Spawn : MonoBehaviour {
     [Range(1, 2)]
     public int Shape = 1; //1 Cube, 2 Sphere
     [Range(1, 3)]
-    public int Quality = 1; //1 Low, 2 High   
+    public int Quality = 1; //1 High, 2 Low   
     public float BPM = 140;
     public GameObject SpawnCube;  
     public GameObject SpawnSphere; 
     
-    private int Branches = 6;
-    private int Leaves = 15;
+    private int Branches = 10;
+    private int Leaves = 20;
     private List<List<FormGameObject>> branches = new List<List<FormGameObject>>(); 
     private bool initMe = true; 
     private PatternType currentPattern;
@@ -64,13 +64,13 @@ public class Spawn : MonoBehaviour {
         ClearScene();
         switch (qualityId) {
             case 1: {
-                Branches = 6;
-                Leaves = 15;
+                Branches = 10;
+                Leaves = 20;
                 break;
             }
             case 2: {
-                Branches = 10;
-                Leaves = 20;
+                Branches = 6;
+                Leaves = 15;
                 break;
             }
             default: {
